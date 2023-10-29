@@ -1,0 +1,209 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  nickname       String         @unique
+  email          String         @unique
+  password       String
+  picture        String
+  birthdate      String
+  emailVerify    Boolean
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime?
+  suscription    Boolean
+  coins          BigInt
+  gems           Int
+  notifications  Boolean
+  characters     Character[]
+  ratings        Rating[]
+  message        Message[]
+  chatsA         Chat[]         @relation("userA")
+  chatsB         Chat[]         @relation("userB")
+  chatsC         Chat[]         @relation("userC")
+  chatsD         Chat[]         @relation("userD")
+  conversationsA Conversation[] @relation("userA")
+  conversationsB Conversation[] @relation("userB")
+  Saved          Saved[]
+  friendsA       Friends[]      @relation("userA")
+  friendsB       Friends[]      @relation("userB")
+}
+
+model Friends {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userA   User   @relation(fields: [userAId], references: [id], name: "userA")
+  userAId String @db.ObjectId
+  userB   User   @relation(fields: [userBId], references: [id], name: "userB")
+  userBId String @db.ObjectId
+}
+
+model Character {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String
+  caracteristics String
+  nacionality    String
+  gender         Gender?   @relation(fields: [genderId], references: [id])
+  age            String
+  status         String
+  language       Language? @relation(fields: [languageId], references: [id])
+  user           User      @relation(fields: [userId], references: [id])
+  ratings        Rating[]
+  rooms          Room[]    @relation(fields: [roomId], references: [id])
+  avatar         Avatar?
+  roomId         String[]  @unique @db.ObjectId
+  userId         String    @unique @db.ObjectId
+  languageId     String?   @unique @db.ObjectId
+  genderId       String?   @unique @db.ObjectId
+}
+
+model Language {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  language  String
+  flag      String
+  Character Character[]
+  Room      Room[]
+}
+
+model Avatar {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  character   Character? @relation(fields: [characterId], references: [id])
+  characterId String?    @unique @db.ObjectId
+  face        Face?      @relation(fields: [faceId], references: [id])
+  faceId      String?    @db.ObjectId
+  eye         Eye?       @relation(fields: [eyeId], references: [id])
+  eyeId       String?    @db.ObjectId
+  hair        Hair?      @relation(fields: [hairId], references: [id])
+  hairId      String?    @db.ObjectId
+  mouth       Mouth?     @relation(fields: [mouthId], references: [id])
+  mouthId     String?    @db.ObjectId
+}
+
+model Face {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  spriteName String
+  avatars    Avatar[]
+}
+
+model Eye {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  spriteName String
+  avatars    Avatar[]
+}
+
+model Hair {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  spriteName String
+  avatars    Avatar[]
+}
+
+model Mouth {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  spriteName String
+  avatars    Avatar[]
+}
+
+model Rating {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  rating      Int
+  character   Character? @relation(fields: [characterId], references: [id])
+  characterId String?    @db.ObjectId
+  user        User?      @relation(fields: [userId], references: [id])
+  userId      String?    @db.ObjectId
+}
+
+model Room {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  litGenre   LitGenre?   @relation(fields: [litGenreId], references: [id])
+  location   Location?   @relation(fields: [locationId], references: [id])
+  turns      Int
+  status     String
+  language   Language?   @relation(fields: [languageId], references: [id])
+  chat       Chat?
+  characters Character[] @relation(fields: [avatarId], references: [id])
+  avatarId   String[]    @unique @db.ObjectId
+  languageId String?     @db.ObjectId
+  litGenreId String?     @db.ObjectId
+  locationId String?     @db.ObjectId
+}
+
+model Gender {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  gender    String
+  character Character[]
+}
+
+model LitGenre {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  genre String
+  Room  Room[]
+}
+
+model Location {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  location String
+  picture  String
+  Room     Room[]
+}
+
+model Chat {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  userAId  String    @db.ObjectId
+  userBId  String?   @db.ObjectId
+  userCId  String?   @db.ObjectId
+  userDId  String?   @db.ObjectId
+  messages Message[]
+  userA    User      @relation(fields: [userAId], references: [id], name: "userA")
+  userB    User?     @relation(fields: [userBId], references: [id], name: "userB")
+  userC    User?     @relation(fields: [userCId], references: [id], name: "userC")
+  userD    User?     @relation(fields: [userDId], references: [id], name: "userD")
+  userId   String    @db.ObjectId
+  room     Room?     @relation(fields: [roomId], references: [id])
+  roomId   String    @unique @db.ObjectId
+  Saved    Saved[]
+}
+
+model Conversation {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  userAId  String    @db.ObjectId
+  userBId  String    @db.ObjectId
+  messages Message[]
+  userA    User      @relation(fields: [userAId], references: [id], name: "userA")
+  userB    User      @relation(fields: [userBId], references: [id], name: "userB")
+}
+
+model Message {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  content        String
+  createdAt      DateTime      @default(now())
+  userId         String        @db.ObjectId
+  conversationId String        @db.ObjectId
+  user           User          @relation(fields: [userId], references: [id])
+  chat           Chat?         @relation(fields: [conversationId], references: [id])
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+}
+
+model Saved {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  chat   Chat?   @relation(fields: [chatId], references: [id])
+  chatId String? @db.ObjectId
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
+}
+
+model Questions {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  questionDate   DateTime @default(now())
+  message        String
+  answer         String?
+  contactEmail   String
+  contactName    String
+  questionStatus Boolean
+}
