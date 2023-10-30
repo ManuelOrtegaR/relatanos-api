@@ -56,7 +56,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
   if (!validation.success) {
     return next({
-      message: "Incorrect data provided",
+      message: "Wrong email or password",
       status: 400,
       error: validation.error
     })
@@ -74,7 +74,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
     if (response === null) {
       return next({
-        message: "Can't find user",
+        message: "Wrong email or password",
         status: 400,
       })
     }
@@ -91,7 +91,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
     if (!validatePassword) {
       return next({
-        message: "Incorret email or password",
+        message: "Wrong email or password",
         status: 400
       })
     }
@@ -102,7 +102,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
   } catch (error) {
     next({
-      message: "Can't find user",
+      message: "Wrong email or password",
       status: 400,
       error,
     })

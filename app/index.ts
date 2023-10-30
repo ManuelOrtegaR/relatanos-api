@@ -31,8 +31,9 @@ app.use((req, res, next) => {
 
 // Error handler
 app.use((err: APIError, req: Request, res: Response, next: NextFunction): void => {
-  const { message = '', error, status = 500 } = err;
-
+  const { message = '', error } = err;
+  let { status = 500 } = err
+  res.status(status)
   res.json({
     error: {
       message,
@@ -40,6 +41,5 @@ app.use((err: APIError, req: Request, res: Response, next: NextFunction): void =
       error,
     },
   });
-  res.status(status)
 });
 

@@ -67,7 +67,6 @@ model Character {
 model Language {
   id        String      @id @default(auto()) @map("_id") @db.ObjectId
   language  String
-  flag      String
   Character Character[]
   Room      Room[]
 }
@@ -89,24 +88,29 @@ model Avatar {
 model Face {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   spriteName String
+  spriteUrl  String
   avatars    Avatar[]
 }
 
 model Eye {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   spriteName String
+  spriteUrl  String
   avatars    Avatar[]
 }
 
 model Hair {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  spriteName String
-  avatars    Avatar[]
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  spriteName  String
+  spriteColor String
+  spriteUrl   String
+  avatars     Avatar[]
 }
 
 model Mouth {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   spriteName String
+  spriteUrl  String
   avatars    Avatar[]
 }
 
