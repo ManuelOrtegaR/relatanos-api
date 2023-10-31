@@ -128,7 +128,8 @@ model Room {
   litGenre   LitGenre?   @relation(fields: [litGenreId], references: [id])
   location   Location?   @relation(fields: [locationId], references: [id])
   turns      Int
-  status     String
+  status     Boolean
+  createdAt  DateTime    @default(now())
   language   Language?   @relation(fields: [languageId], references: [id])
   chat       Chat?
   characters Character[] @relation(fields: [avatarId], references: [id])
