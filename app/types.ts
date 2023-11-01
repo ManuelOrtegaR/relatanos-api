@@ -1,3 +1,5 @@
+import { Request } from "express"
+
 export type APIError = Error & { status: number, error: Error, message: string }
 
 export type Configuration = {
@@ -22,3 +24,18 @@ export type SignIn = {
   password: string
 }
 
+export type UpdateUserBody = {
+  password?: string,
+  picture?: string,
+  suscription?: boolean,
+  coins?: number,
+  gems?: number,
+  notifications?: boolean,
+  status?: string
+}
+
+type Result = {
+  id?: string
+}
+
+export type ReqWithResult = Request & { result?: Result }
