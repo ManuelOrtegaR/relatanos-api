@@ -18,6 +18,7 @@ export const getUser = async (overrides = {}) => {
         coins: 100,
         gems: 0,
         notifications: true,
+        status: "active"
       }
     })
 

@@ -4,6 +4,7 @@ import { config } from './app/config.ts';
 import { app } from './app/index.ts';
 import { connect } from './app/database.ts';
 
+
 const { port } = config;
 
 // Connect to database

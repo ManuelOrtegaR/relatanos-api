@@ -35,6 +35,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
         coins: 100,
         gems: 0,
         notifications: true,
+        status: "Active"
       }
     })
 
