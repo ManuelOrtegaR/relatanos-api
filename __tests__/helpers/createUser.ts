@@ -28,6 +28,7 @@ export const getUser = async (overrides = {}) => {
     }
   } catch (error) {
     return {
+      id: "exampleid",
       nickname: "example",
       email: "example@example.com",
       password: "Example123",

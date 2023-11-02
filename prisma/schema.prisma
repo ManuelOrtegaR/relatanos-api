@@ -46,23 +46,23 @@ model Friends {
 }
 
 model Character {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  description    String
-  caracteristics String
-  nacionality    String
-  gender         Gender?   @relation(fields: [genderId], references: [id])
-  age            String
-  status         String
-  language       Language? @relation(fields: [languageId], references: [id])
-  user           User      @relation(fields: [userId], references: [id])
-  ratings        Rating[]
-  rooms          Room[]    @relation(fields: [roomId], references: [id])
-  avatar         Avatar?
-  roomId         String[]  @unique @db.ObjectId
-  userId         String    @unique @db.ObjectId
-  languageId     String?   @unique @db.ObjectId
-  genderId       String?   @unique @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  characteristics String
+  nacionality     String
+  genderId        String?   @db.ObjectId
+  age             String
+  status          String
+  userId          String    @db.ObjectId
+  languageId      String?   @db.ObjectId
+  roomId          String[]  @db.ObjectId
+  language        Language? @relation(fields: [languageId], references: [id])
+  user            User      @relation(fields: [userId], references: [id])
+  ratings         Rating[]
+  rooms           Room[]    @relation(fields: [roomId], references: [id])
+  avatar          Avatar?
+  gender          Gender?   @relation(fields: [genderId], references: [id])
 }
 
 model Language {
