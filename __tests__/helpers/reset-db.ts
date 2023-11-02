@@ -9,8 +9,6 @@ export const resetDb = async () => {
     prisma.chat.deleteMany(),
     prisma.room.deleteMany(),
     prisma.rating.deleteMany(),
-    prisma.rating.deleteMany(),
-    prisma.avatar.deleteMany(),
     prisma.avatar.deleteMany(),
     prisma.character.deleteMany(),
     prisma.friends.deleteMany(),

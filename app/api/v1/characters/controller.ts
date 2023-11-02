@@ -188,7 +188,7 @@ export const getCharacterById = async (req: ReqWithResult, res: Response, next: 
   }
 
   try {
-    const user = await prisma.character.findUnique({
+    const character = await prisma.character.findUnique({
       where: {
         id: result.id,
       },
@@ -197,7 +197,7 @@ export const getCharacterById = async (req: ReqWithResult, res: Response, next: 
       },
     });
 
-    res.json({ ...user, password: undefined });
+    res.json({ ...character }).status(200);
   } catch (error) {
     next({ message: "Can't get the character", status: 400 });
   }

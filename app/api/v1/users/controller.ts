@@ -57,7 +57,7 @@ export const getUserById = async (req: ReqWithResult, res: Response, next: NextF
       },
     });
 
-    res.json({ ...user, password: undefined });
+    res.json({ ...user, password: undefined }).status(200);
   } catch (error) {
     next({ message: "Can't get the user", status: 400 });
   }

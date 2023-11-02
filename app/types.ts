@@ -71,3 +71,28 @@ export type UpdateCharacterBody = {
   age?: string,
   status?: string
 }
+
+export type CreateQuestionBody = {
+  name: string,
+  email: string,
+  message: string
+}
+
+export type UpdateQuestionBody = {
+  answer: string,
+  questionStatus: boolean
+}
+
+export type EmailStructure = {
+  contactEmail: string,
+  answer: string,
+}
+
+export type CreateConversationBody = {
+  userAId: string,
+  userBId: string,
+}
+
+export type ListConversationBody = {
+  userId: string,
+}
