@@ -1,5 +1,4 @@
 import { Request } from "express"
-import { JwtPayload } from 'jsonwebtoken';
 
 export type APIError = Error & { status: number, error: Error, message: string }
 
@@ -104,4 +103,23 @@ export type CreateConversationBody = {
 
 export type ListConversationBody = {
   userId: string,
+}
+
+export type CreateRoomBody = {
+  characterId: string,
+  turns: number,
+  languageId: string,
+  litGenreId: string,
+  locationId: string,
+}
+
+export type UpdateRoomBody = {
+  turns?: number,
+  languageId?: string,
+  litGenreId?: string,
+  locationId?: string,
+}
+
+export type joinRoomType = {
+  characterId: string
 }

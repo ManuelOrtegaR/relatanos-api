@@ -46,23 +46,23 @@ model Friends {
 }
 
 model Character {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  description     String
-  characteristics String
-  nacionality     String
-  genderId        String?   @db.ObjectId
-  age             String
-  status          String
-  userId          String    @db.ObjectId
-  languageId      String?   @db.ObjectId
-  roomId          String[]  @db.ObjectId
-  language        Language? @relation(fields: [languageId], references: [id])
-  user            User      @relation(fields: [userId], references: [id])
-  ratings         Rating[]
-  rooms           Room[]    @relation(fields: [roomId], references: [id])
-  avatar          Avatar?
-  gender          Gender?   @relation(fields: [genderId], references: [id])
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  description      String
+  characteristics  String
+  nacionality      String
+  genderId         String             @db.ObjectId
+  age              String
+  status           String
+  userId           String             @db.ObjectId
+  languageId       String             @db.ObjectId
+  roomId           String[]           @db.ObjectId
+  language         Language           @relation(fields: [languageId], references: [id])
+  user             User               @relation(fields: [userId], references: [id])
+  ratings          Rating[]
+  avatar           Avatar?
+  gender           Gender             @relation(fields: [genderId], references: [id])
+  CharactersInRoom CharactersInRoom[]
 }
 
 model Language {
@@ -73,17 +73,17 @@ model Language {
 }
 
 model Avatar {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  character   Character? @relation(fields: [characterId], references: [id])
-  characterId String?    @unique @db.ObjectId
-  face        Face?      @relation(fields: [faceId], references: [id])
-  faceId      String?    @db.ObjectId
-  eye         Eye?       @relation(fields: [eyeId], references: [id])
-  eyeId       String?    @db.ObjectId
-  hair        Hair?      @relation(fields: [hairId], references: [id])
-  hairId      String?    @db.ObjectId
-  mouth       Mouth?     @relation(fields: [mouthId], references: [id])
-  mouthId     String?    @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  character   Character @relation(fields: [characterId], references: [id])
+  characterId String    @unique @db.ObjectId
+  face        Face      @relation(fields: [faceId], references: [id])
+  faceId      String    @db.ObjectId
+  eye         Eye       @relation(fields: [eyeId], references: [id])
+  eyeId       String    @db.ObjectId
+  hair        Hair      @relation(fields: [hairId], references: [id])
+  hairId      String    @db.ObjectId
+  mouth       Mouth     @relation(fields: [mouthId], references: [id])
+  mouthId     String    @db.ObjectId
 }
 
 model Face {
@@ -125,19 +125,26 @@ model Rating {
 }
 
 model Room {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  litGenre   LitGenre?   @relation(fields: [litGenreId], references: [id])
-  location   Location?   @relation(fields: [locationId], references: [id])
-  turns      Int
-  status     Boolean
-  createdAt  DateTime    @default(now())
-  language   Language?   @relation(fields: [languageId], references: [id])
-  chat       Chat?
-  characters Character[] @relation(fields: [avatarId], references: [id])
-  avatarId   String[]    @unique @db.ObjectId
-  languageId String?     @db.ObjectId
-  litGenreId String?     @db.ObjectId
-  locationId String?     @db.ObjectId
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  turns            Int
+  status           Boolean
+  createdAt        DateTime           @default(now())
+  languageId       String             @db.ObjectId
+  litGenreId       String             @db.ObjectId
+  locationId       String             @db.ObjectId
+  chat             Chat?
+  litGenre         LitGenre           @relation(fields: [litGenreId], references: [id])
+  location         Location           @relation(fields: [locationId], references: [id])
+  language         Language           @relation(fields: [languageId], references: [id])
+  charactersInRoom CharactersInRoom[]
+}
+
+model CharactersInRoom {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  roomId      String?    @db.ObjectId
+  characterId String?    @db.ObjectId
+  room        Room?      @relation(fields: [roomId], references: [id])
+  character   Character? @relation(fields: [characterId], references: [id])
 }
 
 model Gender {
@@ -165,15 +172,13 @@ model Chat {
   userBId  String?   @db.ObjectId
   userCId  String?   @db.ObjectId
   userDId  String?   @db.ObjectId
+  roomId   String    @unique @db.ObjectId
   messages Message[]
   userA    User      @relation(fields: [userAId], references: [id], name: "userA")
   userB    User?     @relation(fields: [userBId], references: [id], name: "userB")
   userC    User?     @relation(fields: [userCId], references: [id], name: "userC")
   userD    User?     @relation(fields: [userDId], references: [id], name: "userD")
-  userId   String    @db.ObjectId
   room     Room?     @relation(fields: [roomId], references: [id])
-  roomId   String    @unique @db.ObjectId
-  Saved    Saved[]
 }
 
 model Conversation {
@@ -198,8 +203,7 @@ model Message {
 
 model Saved {
   id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  chat   Chat?   @relation(fields: [chatId], references: [id])
-  chatId String? @db.ObjectId
+  chat   String
   user   User?   @relation(fields: [userId], references: [id])
   userId String? @db.ObjectId
 }

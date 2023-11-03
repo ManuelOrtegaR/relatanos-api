@@ -21,8 +21,8 @@ router.param('id', controller.characterId);
 router
   .route('/:id')
   .get(auth, controller.getCharacterById)
-  .put(auth, controller.updateCharacterUserById)
-  .patch(auth, controller.updateCharacterUserById);
+  .put(auth, controller.updateCharacterById)
+  .patch(auth, controller.updateCharacterById);
 
 router
   .route('/:id/activate')

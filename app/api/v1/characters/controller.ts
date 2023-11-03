@@ -209,7 +209,7 @@ export const getCharacterById = async (req: ReqWithResult, res: Response, next: 
   }
 }
 
-export const updateCharacterUserById = async (req: ReqWithResult, res: Response, next: NextFunction) => {
+export const updateCharacterById = async (req: ReqWithResult, res: Response, next: NextFunction) => {
   const { result } = req;
   const { body }: { body: UpdateCharacterBody } = req
 
