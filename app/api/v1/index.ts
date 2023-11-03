@@ -4,6 +4,7 @@ import { router as user } from './users/routes.ts';
 import { router as character } from './characters/routes.ts';
 import { router as room } from './rooms/routes.ts';
 import { router as conversation } from './conversations/routes.ts';
+import { router as message } from './messages/routes.ts';
 import { router as question } from './questions/routes.ts';
 
 export const router = Router();
@@ -13,4 +14,5 @@ router.use('/user', user);
 router.use('/characters', character);
 router.use('/rooms', room);
 router.use('/conversations', conversation);
+router.use('/messages', message);
 router.use('/questions', question);

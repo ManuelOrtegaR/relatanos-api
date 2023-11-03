@@ -2,80 +2,30 @@ import { emailStructure, transporter } from "../../../mailer.ts";
 import { NextFunction, Request, Response } from "express";
 import { parsePaginationParams } from "../../../utils.ts";
 import { prisma } from "../../../database.ts";
-import { type ReqWithResult, UpdateQuestionBody, CreateConversationBody, ListConversationBody } from "../../../types.ts";
-import { validateCreateConversation, validateListConversation } from "./models.ts";
+import { type ReqWithResult, CreateConversationBody } from "../../../types.ts";
+import { validateCreateConversation } from "./models.ts";
 
-export const getAllConversations = async (req: Request, res: Response, next: NextFunction) => {
-  const { query } = req;
+export const getAllConversations = async (req: ReqWithResult, res: Response, next: NextFunction) => {
+  const { query, decoded } = req;
   const { offset, limit } = parsePaginationParams(query);
 
-  try {
-    const response = await prisma.conversation.findMany({
-      skip: offset,
-      take: limit,
-    })
-    res.json(response).status(200)
-  } catch (error) {
-    next({ message: "Can't get all conversations", status: 400 })
-  }
-}
-
-export const createConversation = async (req: Request, res: Response, next: NextFunction) => {
-  const { body }: { body: CreateConversationBody } = req
-
-  const validation = await validateCreateConversation(body)
-
-  if (!validation.success) {
-    return next({
-      message: "Incorrect data provided",
-      status: 400,
-      error: validation.error
-    })
+  if (!decoded) {
+    return next({ message: "Forbidden", status: 403 })
   }
 
-  const { userAId, userBId } = validation.data
-
-  try {
-    const conversation = await prisma.conversation.create({
-      data: {
-        userAId,
-        userBId
-      }
-    })
-    res.json(conversation).status(200)
-  } catch (error) {
-    next({
-      message: "Can't create conversation",
-      status: 400,
-      error,
-    })
-  }
-}
-
-export const listMyConversations = async (req: Request, res: Response, next: NextFunction) => {
-  const { body }: { body: ListConversationBody } = req
-
-  const validation = await validateListConversation(body)
-
-  if (!validation.success) {
-    return next({
-      message: "Incorrect data provided",
-      status: 400,
-      error: validation.error
-    })
-  }
-
-  const { userId } = validation.data
+  const { id } = decoded
 
   try {
     const conversations = await prisma.conversation.findMany({
+      skip: offset,
+      take: limit,
       where: {
         OR: [
           {
-            userAId: userId,
+            userAId: id,
           },
           {
-            userBId: userId,
+            userBId: id,
           },
         ],
       },
@@ -97,12 +47,50 @@ export const listMyConversations = async (req: Request, res: Response, next: Nex
       },
     });
 
-    res.json(conversations);
+    res.json(conversations).status(200);
   } catch (error) {
-    next(error);
+    next({ message: "Can't get all conversations", status: 400 })
   }
 }
 
+export const createConversation = async (req: ReqWithResult, res: Response, next: NextFunction) => {
+  const { body, decoded }: { body: CreateConversationBody, decoded?: Record<string, string> } = req
+
+  const validation = await validateCreateConversation(body)
+
+  if (!validation.success) {
+    return next({
+      message: "Incorrect data provided",
+      status: 400,
+      error: validation.error
+    })
+  }
+
+  if (!decoded) {
+    return next({
+      message: "Forbidden",
+      status: 403,
+    })
+  }
+  const { id } = decoded
+  const { userBId } = validation.data
+
+  try {
+    const conversation = await prisma.conversation.create({
+      data: {
+        userAId: id,
+        userBId
+      }
+    })
+    res.json(conversation).status(200)
+  } catch (error) {
+    next({
+      message: "Can't create conversation",
+      status: 400,
+      error,
+    })
+  }
+}
 
 export const conversationId = async (req: ReqWithResult, res: Response, next: NextFunction) => {
   const { params = {} } = req;
@@ -145,44 +133,4 @@ export const getConversationById = async (req: ReqWithResult, res: Response, nex
   }
 }
 
-// export const updateQuestionById = async (req: ReqWithResult, res: Response, next: NextFunction) => {
-//   const { result } = req;
-//   const { body }: { body: UpdateQuestionBody } = req
-
-//   if (!result) {
-//     return next({ message: 'Invalid question', status: 400 })
-//   }
-
-//   const validation = await validateUpdateQuestion(body)
-
-//   if (!validation.success) {
-//     return next({
-//       message: "Incorrect data provided",
-//       status: 400,
-//       error: validation.error
-//     })
-//   }
-
-//   try {
-//     const response = await prisma.questions.update({
-//       where: {
-//         id: result.id
-//       },
-//       data: {
-//         ...validation.data
-//       }
-//     })
-
-//     const { contactEmail, answer } = response
-
-//     if (contactEmail && answer) {
-//       const mail = emailStructure({ contactEmail, answer });
-//       await transporter.sendMail(mail);
-//     }
-
-//     res.json(response).status(200)
-//   } catch (error) {
-//     next({ message: "Can't update the question", status: 400 })
-//   }
-// }
 

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { CreateConversationBody, ListConversationBody } from '../../../types.ts';
 
 const ConversationSchema = z.object({
-  userAId: z.string().trim(),
   userBId: z.string().trim(),
 });
 

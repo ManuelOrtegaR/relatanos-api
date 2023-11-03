@@ -10,8 +10,8 @@ export const router = Router();
  * /api/v1/room/:id METHOD: GET - Get room by id
  * /api/v1/room/:id METHOD: PUT - Update room by id
  * /api/v1/room/:id METHOD: PATCH - Update room by id
- * /api/v1/room/:id/activate METHOD: PUT - Change room status to "active" by id
- * /api/v1/room/:id/activate METHOD: PATCH - Change room status to "active" by id
+ * /api/v1/room/:id/join METHOD: POST - Join room by id
+ * /api/v1/room/:id/exit METHOD: POST - Exit or delete room by id
  */
 
 router.route('/').get(auth, controller.getAllRooms).post(auth, controller.createRoom);

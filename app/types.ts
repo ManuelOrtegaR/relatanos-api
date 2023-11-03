@@ -97,8 +97,13 @@ export type EmailStructure = {
 }
 
 export type CreateConversationBody = {
-  userAId: string,
   userBId: string,
+}
+
+export type CreateMessageBody = {
+  content: string,
+  conversationId?: string,
+  chatId?: string,
 }
 
 export type ListConversationBody = {
