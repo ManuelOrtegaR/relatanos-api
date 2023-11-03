@@ -1,10 +1,12 @@
 import { Request } from "express"
+import { JwtPayload } from 'jsonwebtoken';
 
 export type APIError = Error & { status: number, error: Error, message: string }
 
 export type Configuration = {
   port: number,
   pagination: PaginationConfiguration,
+  token: TokenConfiguration
 }
 
 export type PaginationConfiguration = {
@@ -12,20 +14,28 @@ export type PaginationConfiguration = {
   offset: number
 }
 
+export type TokenConfiguration = {
+  secret: string,
+  expires: string
+}
+
+export type SignInToken = {
+  id: string,
+  firebaseUid: string
+}
+
 export type SignupBody = {
   nickname: string,
   email: string,
   birthdate: string,
-  password: string
+  FirebaseUid: string
 }
 
 export type SignIn = {
-  email: string,
-  password: string
+  firebseUid: string,
 }
 
 export type UpdateUserBody = {
-  password?: string,
   picture?: string,
   suscription?: boolean,
   coins?: number,
@@ -38,7 +48,7 @@ type Result = {
   id?: string
 }
 
-export type ReqWithResult = Request & { result?: Result }
+export type ReqWithResult = Request & { result?: Result, decoded?: Record<string, string> }
 
 export type CharacterData = {
   name: string,
@@ -48,7 +58,6 @@ export type CharacterData = {
   genderId: string,
   age: string,
   languageId: string,
-  userId: string
 }
 
 export type AvatarData = {

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../../database.ts";
 
-import { encryptPassword, verifyPassword } from "../../../utils.ts";
 import { SignIn, SignupBody } from '../../../types.ts';
 import { validateSignin, validateSignup } from "./models.ts";
+import { signToken } from "../auth.ts";
 
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,17 +19,11 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     })
   }
 
-  const { nickname, email, password, birthdate } = validation.data
-  const encryptedPassword = await encryptPassword(password)
-
   try {
     await prisma.user.create({
       data: {
-        nickname,
-        email,
-        password: encryptedPassword,
+        ...validation.data,
         picture: "https://placehold.co/400",
-        birthdate,
         emailVerify: false,
         suscription: false,
         coins: 100,
@@ -63,13 +57,11 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
     })
   }
 
-  const { email, password } = validation.data
-
   try {
 
     const response = await prisma.user.findUnique({
       where: {
-        email
+        firebaseUid: validation.data.firebaseUid
       }
     })
 
@@ -80,8 +72,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
       })
     }
 
-    const { emailVerify, password: encryptedPassword, id } = response
-    const validatePassword = await verifyPassword(password, encryptedPassword)
+    const { emailVerify } = response
 
     if (!emailVerify) {
       return next({
@@ -90,15 +81,16 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
       })
     }
 
-    if (!validatePassword) {
-      return next({
-        message: "Wrong email or password",
-        status: 400
-      })
-    }
+    const { id, firebaseUid } = response
+
+    const token = signToken({ id, firebaseUid })
 
     res.json({
-      message: "Login successfully"
+      message: "Login successfully",
+      data: { ...response },
+      meta: {
+        token
+      }
     }).status(200)
 
   } catch (error) {

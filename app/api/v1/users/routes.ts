@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from './controller.ts';
+import { auth } from '../auth.ts';
 
 export const router = Router();
 
@@ -12,16 +13,16 @@ export const router = Router();
  * /api/v1/user/:id/activate METHOD: PATCH - Change user status to "active" by id
  */
 
-router.route('/').get(controller.getAllUsers);
+router.route('/').get(auth, controller.getAllUsers);
 
 router.param('id', controller.userId);
 router
   .route('/:id')
-  .get(controller.getUserById)
-  .put(controller.updateUserById)
-  .patch(controller.updateUserById);
+  .get(auth, controller.getUserById)
+  .put(auth, controller.updateUserById)
+  .patch(auth, controller.updateUserById);
 
 router
   .route('/:id/activate')
-  .put(controller.activateUserById)
-  .patch(controller.activateUserById)
+  .put(auth, controller.activateUserById)
+  .patch(auth, controller.activateUserById)

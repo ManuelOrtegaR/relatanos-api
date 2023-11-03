@@ -8,4 +8,8 @@ export const config: Configuration = {
     limit: 10,
     offset: 0,
   },
+  token: {
+    secret: process.env.TOKEN_SECRET || "token",
+    expires: process.env.TOKEN_EXPIRES || "1h",
+  },
 };

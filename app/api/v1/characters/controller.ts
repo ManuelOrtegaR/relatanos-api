@@ -22,8 +22,15 @@ export const getAllCharacters = async (req: Request, res: Response, next: NextFu
   }
 }
 
-export const createCharacter = async (req: Request, res: Response, next: NextFunction) => {
-  const { body }: { body: CreateCharacterBody } = req
+export const createCharacter = async (req: ReqWithResult, res: Response, next: NextFunction) => {
+  const { body, decoded }: { body: CreateCharacterBody, decoded?: Record<string, string> } = req
+
+  if (!decoded) {
+    return next({
+      message: "Forbidden",
+      status: 403,
+    })
+  }
 
   const validation = await validateCreateCharacter(body)
 
@@ -35,16 +42,17 @@ export const createCharacter = async (req: Request, res: Response, next: NextFun
     })
   }
 
+  const { id } = decoded
   const { characterData, avatarData } = validation.data
 
-  const { userId, genderId, languageId, ...rest } = characterData
+  const { genderId, languageId, ...rest } = characterData
   const { eyeId, faceId, hairId, mouthId } = avatarData
 
   try {
     await prisma.$transaction(async (transaction) => {
       await transaction.user.findUnique({
         where: {
-          id: userId
+          id,
         }
       })
 
@@ -68,7 +76,7 @@ export const createCharacter = async (req: Request, res: Response, next: NextFun
 
       const responseCharacter = await transaction.character.create({
         data: {
-          userId,
+          userId: id,
           genderId,
           languageId,
           status: "active",
@@ -119,24 +127,22 @@ export const createCharacter = async (req: Request, res: Response, next: NextFun
   }
 }
 
-type userIdBody = {
-  userId: string
-}
+export const getAllCharactersByUser = async (req: ReqWithResult, res: Response, next: NextFunction) => {
+  const { decoded } = req
 
-export const getAllCharactersByUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { body }: { body: userIdBody } = req
-
-  if (!body.userId) {
+  if (!decoded) {
     return next({
-      message: "Incorrect data provided",
-      status: 400,
+      message: "Forbidden",
+      status: 403,
     })
   }
+
+  const { id } = decoded
 
   try {
     const response = await prisma.character.findMany({
       where: {
-        userId: body.userId
+        userId: id
       },
       include: {
         avatar: true

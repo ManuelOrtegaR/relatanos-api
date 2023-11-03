@@ -9,7 +9,6 @@ const CharacterSchema = z.object({
   age: z.string().trim(),
   genderId: z.string().trim(),
   languageId: z.string().trim(),
-  userId: z.string().trim(),
 })
 
 const AvatarSchema = z.object({

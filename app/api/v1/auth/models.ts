@@ -5,12 +5,11 @@ const UserSchema = z.object({
   nickname: z.string().trim().toUpperCase(),
   email: z.string().trim().email().toUpperCase(),
   birthdate: z.string().trim(),
-  password: z.string().min(8).max(16).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/)
+  firebaseUid: z.string().trim(),
 });
 
 const SignInSchema = z.object({
-  email: z.string().trim().email().toUpperCase(),
-  password: z.string().min(8).max(16).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/)
+  firebaseUid: z.string().trim(),
 });
 
 export const validateSignup = async (payload: SignupBody) => {

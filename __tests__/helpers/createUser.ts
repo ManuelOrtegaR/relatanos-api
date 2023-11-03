@@ -1,16 +1,14 @@
 import { prisma } from "../../app/database.ts"
-import { encryptPassword } from "../../app/utils.ts"
 import { getAvatarData, getCharacterData, getUserData } from "../fixtures/data.fixture.ts"
 
 export const getUser = async (overrides = {}) => {
-  const { nickname, email, password, birthdate } = getUserData(overrides)
+  const { nickname, email, firebaseUid, birthdate } = getUserData(overrides)
   try {
-    const encryptedPassword = await encryptPassword(password)
     const result = await prisma.user.create({
       data: {
         nickname,
         email,
-        password: encryptedPassword,
+        firebaseUid,
         birthdate,
         picture: "https://placehold.co/400",
         emailVerify: true,
@@ -24,22 +22,20 @@ export const getUser = async (overrides = {}) => {
 
     return {
       ...result,
-      decryptedPassword: password
     }
   } catch (error) {
     return {
       id: "exampleid",
       nickname: "example",
       email: "example@example.com",
-      password: "Example123",
+      firebaseUid: "Example123",
       birthdate: "01/01/2000",
       picture: "https://placehold.co/400",
       emailVerify: true,
       suscription: false,
       coins: 100,
       gems: 0,
-      notifications: true,
-      decryptedPassword: password
+      notifications: true
     }
   }
 }
