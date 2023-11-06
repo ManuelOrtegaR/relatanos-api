@@ -13,8 +13,10 @@ export const router = Router();
  * /api/v1/character/:id/activate METHOD: PUT - Change character status to "active" by id
  * /api/v1/character/:id/activate METHOD: PATCH - Change character status to "active" by id
  */
-
+// TODO: get only my characters
+// TODO: comment avatars verification and prove
 router.route('/').get(auth, controller.getAllCharacters).post(auth, controller.createCharacter);
+// TODO: Change to get and add auth
 router.route('/userId').post(controller.getAllCharactersByUser);
 
 router.param('id', controller.characterId);

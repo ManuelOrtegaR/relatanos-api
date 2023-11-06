@@ -168,13 +168,13 @@ model Location {
 
 model Chat {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  userAId  String    @db.ObjectId
+  userAId  String?   @db.ObjectId
   userBId  String?   @db.ObjectId
   userCId  String?   @db.ObjectId
   userDId  String?   @db.ObjectId
   roomId   String    @unique @db.ObjectId
   messages Message[]
-  userA    User      @relation(fields: [userAId], references: [id], name: "userA")
+  userA    User?     @relation(fields: [userAId], references: [id], name: "userA")
   userB    User?     @relation(fields: [userBId], references: [id], name: "userB")
   userC    User?     @relation(fields: [userCId], references: [id], name: "userC")
   userD    User?     @relation(fields: [userDId], references: [id], name: "userD")

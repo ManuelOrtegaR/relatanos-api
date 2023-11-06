@@ -73,6 +73,9 @@ export const getCategories = async () => {
   const hairs = await prisma.hair.findMany({})
   const mouths = await prisma.mouth.findMany({})
   const eyes = await prisma.eye.findMany({})
+  const litGenres = await prisma.litGenre.findMany({})
+  const locations = await prisma.location.findMany({})
+
 
   return {
     genders,
@@ -80,6 +83,43 @@ export const getCategories = async () => {
     faces,
     hairs,
     mouths,
-    eyes
+    eyes,
+    litGenres,
+    locations
+  }
+}
+
+export const getRoom = async ({ characterId, id }: { characterId: string, id: string }) => {
+  const { languages, litGenres, locations } = await getCategories()
+  const room = await prisma.room.create({
+    data: {
+      turns: 1,
+      languageId: languages[0].id,
+      litGenreId: litGenres[0].id,
+      locationId: locations[0].id,
+      status: true
+    }
+  })
+
+  const { id: roomId } = room
+
+  const characterInRoom = await prisma.charactersInRoom.create({
+    data: {
+      roomId,
+      characterId,
+    }
+  })
+
+  const chat = await prisma.chat.create({
+    data: {
+      userAId: id,
+      roomId
+    }
+  })
+
+  return {
+    room,
+    characterInRoom,
+    chat
   }
 }

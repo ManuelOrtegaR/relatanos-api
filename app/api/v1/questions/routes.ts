@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from './controller.ts';
+import { auth } from '../auth.ts';
 
 export const router = Router();
 
@@ -11,11 +12,11 @@ export const router = Router();
  * /api/v1/questions/:id METHOD: PATCH - Update question by id
  */
 
-router.route('/').get(controller.getAllQuestions).post(controller.createQuestion);
+router.route('/').get(auth, controller.getAllQuestions).post(controller.createQuestion);
 
 router.param('id', controller.questionId);
 router
   .route('/:id')
-  .get(controller.getQuestionById)
-  .put(controller.updateQuestionById)
-  .patch(controller.updateQuestionById);
+  .get(auth, controller.getQuestionById)
+  .put(auth, controller.updateQuestionById)
+  .patch(auth, controller.updateQuestionById);

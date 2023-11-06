@@ -2,6 +2,7 @@ import { emailStructure, transporter } from "../../../mailer.ts";
 import { NextFunction, Request, Response } from "express";
 import { parsePaginationParams } from "../../../utils.ts";
 import { prisma } from "../../../database.ts";
+// import { Prisma } from '@prisma/client'
 import { type ReqWithResult, CreateQuestionBody, UpdateQuestionBody } from "../../../types.ts";
 import { validateCreateQuestion, validateUpdateQuestion } from "./models.ts";
 

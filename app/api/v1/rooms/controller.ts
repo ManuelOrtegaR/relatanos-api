@@ -41,6 +41,7 @@ export const createRoom = async (req: ReqWithResult, res: Response, next: NextFu
 
   const validation = await validateCreateRoom(body)
 
+
   if (!validation.success) {
     return next({
       message: "Incorrect data provided",
@@ -80,6 +81,7 @@ export const createRoom = async (req: ReqWithResult, res: Response, next: NextFu
       res.json({ room, characterInRoom, chat }).status(200)
     })
   } catch (error) {
+    console.log(error)
     next({
       message: "Can't create room",
       status: 400,

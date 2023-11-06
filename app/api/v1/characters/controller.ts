@@ -68,12 +68,6 @@ export const createCharacter = async (req: ReqWithResult, res: Response, next: N
         }
       })
 
-      await transaction.gender.findUnique({
-        where: {
-          id: genderId
-        }
-      })
-
       const responseCharacter = await transaction.character.create({
         data: {
           userId: id,
