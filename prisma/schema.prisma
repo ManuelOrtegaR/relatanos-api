@@ -84,6 +84,8 @@ model Avatar {
   hairId      String    @db.ObjectId
   mouth       Mouth     @relation(fields: [mouthId], references: [id])
   mouthId     String    @db.ObjectId
+  nose        Nose      @relation(fields: [noseId], references: [id])
+  noseId      String    @db.ObjectId
 }
 
 model Face {
@@ -109,6 +111,13 @@ model Hair {
 }
 
 model Mouth {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  spriteName String
+  spriteUrl  String
+  avatars    Avatar[]
+}
+
+model Nose {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   spriteName String
   spriteUrl  String

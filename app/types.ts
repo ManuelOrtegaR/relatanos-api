@@ -27,7 +27,7 @@ export type SignupBody = {
   nickname: string,
   email: string,
   birthdate: string,
-  FirebaseUid: string
+  firebaseUid: string
 }
 
 export type SignIn = {
@@ -128,3 +128,5 @@ export type UpdateRoomBody = {
 export type joinRoomType = {
   characterId: string
 }
+
+export type spriteTypes = "face" | "hair" | "eye" | "mouth" | "nose"

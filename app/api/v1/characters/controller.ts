@@ -46,7 +46,7 @@ export const createCharacter = async (req: ReqWithResult, res: Response, next: N
   const { characterData, avatarData } = validation.data
 
   const { genderId, languageId, ...rest } = characterData
-  const { eyeId, faceId, hairId, mouthId } = avatarData
+  const { eyeId, faceId, hairId, mouthId, noseId } = avatarData
 
   try {
     await prisma.$transaction(async (transaction) => {
@@ -111,6 +111,7 @@ export const createCharacter = async (req: ReqWithResult, res: Response, next: N
           eyeId,
           hairId,
           mouthId,
+          noseId,
         }
       })
 

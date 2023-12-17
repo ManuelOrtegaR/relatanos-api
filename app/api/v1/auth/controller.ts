@@ -8,6 +8,7 @@ import { signToken } from "../auth.ts";
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
   const { body }: { body: SignupBody } = req
+  console.log('entre aqui')
 
   const validation = await validateSignup(body)
 
@@ -62,6 +63,9 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
     const response = await prisma.user.findUnique({
       where: {
         firebaseUid: validation.data.firebaseUid
+      },
+      include: {
+        characters: true
       }
     })
 
@@ -72,14 +76,14 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
       })
     }
 
-    const { emailVerify } = response
+    // const { emailVerify } = response
 
-    if (!emailVerify) {
-      return next({
-        message: "Need to verify your email account",
-        status: 400
-      })
-    }
+    // if (!emailVerify) {
+    //   return next({
+    //     message: "Need to verify your email account",
+    //     status: 400
+    //   })
+    // }
 
     const { id, firebaseUid } = response
 
@@ -94,6 +98,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
     }).status(200)
 
   } catch (error) {
+    console.log(error)
     next({
       message: "Wrong email or password",
       status: 400,
