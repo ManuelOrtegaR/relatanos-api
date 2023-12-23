@@ -12,11 +12,18 @@ export const getAllRooms = async (req: Request, res: Response, next: NextFunctio
     const response = await prisma.room.findMany({
       skip: offset,
       take: limit,
+      orderBy: {
+        createdAt: "desc"
+      },
       where: {
         status: true,
       },
       include: {
-        charactersInRoom: true,
+        _count: {
+          select: {
+            charactersInRoom: true,
+          }
+        },
         language: true,
         chat: true,
         litGenre: true,
@@ -55,6 +62,15 @@ export const createRoom = async (req: ReqWithResult, res: Response, next: NextFu
 
   try {
     await prisma.$transaction(async (transaction) => {
+      const character = await transaction.character.findUnique({
+        where: {
+          id: characterId
+        },
+        include: {
+          avatar: true
+        }
+      })
+
       const room = await transaction.room.create({
         data: {
           ...rest,
@@ -64,10 +80,42 @@ export const createRoom = async (req: ReqWithResult, res: Response, next: NextFu
 
       const { id: roomId } = room
 
+      const faceUrl = await transaction.face.findUnique({
+        where: {
+          id: character?.avatar?.faceId
+        }
+      })
+      const hairUrl = await transaction.hair.findUnique({
+        where: {
+          id: character?.avatar?.hairId
+        }
+      })
+      const eyeUrl = await transaction.eye.findUnique({
+        where: {
+          id: character?.avatar?.eyeId
+        }
+      })
+      const mouthUrl = await transaction.mouth.findUnique({
+        where: {
+          id: character?.avatar?.mouthId
+        }
+      })
+      const noseUrl = await transaction.nose.findUnique({
+        where: {
+          id: character?.avatar?.noseId
+        }
+      })
+
       const characterInRoom = await transaction.charactersInRoom.create({
         data: {
           roomId,
-          characterId
+          characterId,
+          name: character!.name,
+          faceUrl: faceUrl!.spriteUrl,
+          hairUrl: hairUrl!.spriteUrl,
+          eyeUrl: eyeUrl!.spriteUrl,
+          mouthUrl: mouthUrl!.spriteUrl,
+          noseUrl: noseUrl!.spriteUrl
         }
       })
 
@@ -200,7 +248,17 @@ export const joinRoom = async (req: ReqWithResult, res: Response, next: NextFunc
   const { characterId } = body
 
   try {
+
     await prisma.$transaction(async (transaction) => {
+      const character = await transaction.character.findUnique({
+        where: {
+          id: characterId
+        },
+        include: {
+          avatar: true
+        }
+      })
+
       const targetRoom = await transaction.room.findUnique({
         where: {
           id: result.id
@@ -252,10 +310,42 @@ export const joinRoom = async (req: ReqWithResult, res: Response, next: NextFunc
         }
       }
 
+      const faceUrl = await transaction.face.findUnique({
+        where: {
+          id: character?.avatar?.faceId
+        }
+      })
+      const hairUrl = await transaction.hair.findUnique({
+        where: {
+          id: character?.avatar?.hairId
+        }
+      })
+      const eyeUrl = await transaction.eye.findUnique({
+        where: {
+          id: character?.avatar?.eyeId
+        }
+      })
+      const mouthUrl = await transaction.mouth.findUnique({
+        where: {
+          id: character?.avatar?.mouthId
+        }
+      })
+      const noseUrl = await transaction.nose.findUnique({
+        where: {
+          id: character?.avatar?.noseId
+        }
+      })
+
       await transaction.charactersInRoom.create({
         data: {
           roomId,
-          characterId: characterId
+          characterId: characterId,
+          name: character!.name,
+          faceUrl: faceUrl!.spriteUrl,
+          hairUrl: hairUrl!.spriteUrl,
+          eyeUrl: eyeUrl!.spriteUrl,
+          mouthUrl: mouthUrl!.spriteUrl,
+          noseUrl: noseUrl!.spriteUrl
         }
       })
 

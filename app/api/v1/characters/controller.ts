@@ -104,6 +104,12 @@ export const createCharacter = async (req: ReqWithResult, res: Response, next: N
         }
       })
 
+      await transaction.nose.findUnique({
+        where: {
+          id: noseId
+        }
+      })
+
       const responseAvatar = await transaction.avatar.create({
         data: {
           characterId,
@@ -258,5 +264,18 @@ export const activateCharacterById = async (req: ReqWithResult, res: Response, n
     res.json(response).status(200)
   } catch (error) {
     next({ message: "Can't activate the character", status: 400 })
+  }
+}
+
+export const getCharacterData = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await prisma.$transaction(async (transaction) => {
+      const gender = await transaction.gender.findMany()
+      const language = await transaction.language.findMany()
+      res.json({ gender, language }).status(200)
+    })
+  } catch (error) {
+    console.log(error)
+    next({ message: "Can't get character data", status: 400 })
   }
 }

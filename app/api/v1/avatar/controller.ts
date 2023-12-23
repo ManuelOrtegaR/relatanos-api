@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { parsePaginationParams } from "../../../utils.ts";
 import { prisma } from "../../../database.ts";
-import { type ReqWithResult, spriteTypes } from "../../../types.ts";
+import { type ReqWithResult, spriteTypes, AvatarData } from "../../../types.ts";
 import { validateCreateCharacter, validateUpdateCharacter } from "./models.ts";
 
 export const getAllSprites = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,6 +17,43 @@ export const getAllSprites = async (req: Request, res: Response, next: NextFunct
   } catch (error) {
     console.log(error)
     next({ message: "Can't get all sprites", status: 400 })
+  }
+}
+
+export const getAvatarSprites = async (req: Request, res: Response, next: NextFunction) => {
+  const { body }: { body: AvatarData } = req
+  try {
+    await prisma.$transaction(async (transaction) => {
+      const faceUrl = await transaction.face.findUnique({
+        where: {
+          id: body.faceId
+        }
+      })
+      const hairUrl = await transaction.hair.findUnique({
+        where: {
+          id: body.hairId
+        }
+      })
+      const eyeUrl = await transaction.eye.findUnique({
+        where: {
+          id: body.eyeId
+        }
+      })
+      const mouthUrl = await transaction.mouth.findUnique({
+        where: {
+          id: body.mouthId
+        }
+      })
+      const noseUrl = await transaction.nose.findUnique({
+        where: {
+          id: body.noseId
+        }
+      })
+      res.json({ faceUrl, hairUrl, eyeUrl, mouthUrl, noseUrl }).status(200)
+    })
+  } catch (error) {
+    console.log(error)
+    next({ message: "Can't get avatar's sprites", status: 400 })
   }
 }
 

@@ -19,6 +19,37 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
+export const getMyUser = async (req: ReqWithResult, res: Response, next: NextFunction) => {
+  const { decoded } = req;
+
+  if (!decoded) {
+    return next({
+      message: "Forbidden",
+      status: 403,
+    })
+  }
+
+  const { id } = decoded
+
+  try {
+    const response = await prisma.user.findUnique({
+      where: {
+        id
+      },
+      include: {
+        characters: {
+          include: {
+            avatar: true
+          }
+        }
+      }
+    })
+    res.json(response).status(200)
+  } catch (error) {
+    next({ message: "Can't get user", status: 400 })
+  }
+}
+
 export const userId = async (req: ReqWithResult, res: Response, next: NextFunction) => {
   const { params = {} } = req;
   try {

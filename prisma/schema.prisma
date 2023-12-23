@@ -152,6 +152,12 @@ model CharactersInRoom {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   roomId      String?    @db.ObjectId
   characterId String?    @db.ObjectId
+  name        String
+  faceUrl     String
+  hairUrl     String
+  eyeUrl      String
+  mouthUrl    String
+  noseUrl     String
   room        Room?      @relation(fields: [roomId], references: [id])
   character   Character? @relation(fields: [characterId], references: [id])
 }

@@ -63,7 +63,8 @@ export type AvatarData = {
   faceId: string,
   eyeId: string,
   hairId: string,
-  mouthId: string
+  mouthId: string,
+  noseId: string,
 }
 
 export interface CreateCharacterBody {

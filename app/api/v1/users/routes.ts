@@ -14,6 +14,7 @@ export const router = Router();
  */
 
 router.route('/').get(auth, controller.getAllUsers);
+router.route('/me').get(auth, controller.getMyUser);
 
 router.param('id', controller.userId);
 router
